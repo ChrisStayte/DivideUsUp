@@ -89,8 +89,6 @@ namespace DivideUsUp
                     folderIndex++;
                 }
                 
-                
-
                 foreach (var file in group)
                 {    
                     try
@@ -103,9 +101,7 @@ namespace DivideUsUp
                         Console.ReadKey();
                         Environment.Exit(0);
                     }
-                    
                 }
-                
             }
             Console.WriteLine("Press AnyKey to Exit...");
             Console.ReadKey();
