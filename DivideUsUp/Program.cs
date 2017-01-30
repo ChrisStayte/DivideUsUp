@@ -33,6 +33,7 @@ namespace DivideUsUp
             int FolderCount = 0;
             Int32.TryParse(Console.ReadLine(), out FolderCount);
 
+            // The Amount of Folders Should not exceed the amount of folders
             if (FolderCount > files.Length)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -41,6 +42,7 @@ namespace DivideUsUp
                 Environment.Exit(0);
             }
 
+            // You can't divide the files up into no folders
             if (FolderCount == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -49,28 +51,42 @@ namespace DivideUsUp
                 Environment.Exit(0);
             }
 
-            List<String> MovePaths = new List<String>();
-            int filesPerFolder = files.Length / FolderCount;
+            
+            int filesPerFolder = (int)Math.Floor(files.Length / (double)FolderCount);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\n" + filesPerFolder + " Files Per Folder");
             Console.ResetColor();
 
-
+            // Seperate the Files into groups 
             var groups = from index in Enumerable.Range(0, files.Length) group files[index] by index / filesPerFolder;
-            int groupIndex = 1;
+
+            // Keep Track Of Current Moving Direcotory Index
+            int folderIndex = 1;
+            
+            // Don't allow double warning
+            bool flag = false;
 
             foreach (var group in groups)
             {
-                string path = CurrentDirectory + "\\" + groupIndex;
-                if (group.ToArray().Length < filesPerFolder)
+                string path = CurrentDirectory + "\\" + folderIndex;
+                
+                // If the files can't fill the next directory fully or if the folderIndex exceeds the user amount
+                if (group.ToArray().Length < filesPerFolder || folderIndex == (FolderCount + 1))
                 {
-                    path = CurrentDirectory + "\\" + (groupIndex - 1);
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("\nCouldn't Be Divided Equally...\nStragglers went to Last Folder");
-                    Console.ResetColor();
+                    path = CurrentDirectory + "\\" + (folderIndex - 1);
+                    if (!flag)
+                    {
+                        
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("\nCouldn't Be Divided Equally...\nStragglers went to Last Folder");
+                        Console.ResetColor();
+                        flag = true;
+                    }
+                    
                 } else
                 {
                     System.IO.Directory.CreateDirectory(path);
+                    folderIndex++;
                 }
                 
                 
@@ -89,7 +105,7 @@ namespace DivideUsUp
                     }
                     
                 }
-                groupIndex++;
+                
             }
             Console.WriteLine("Press AnyKey to Exit...");
             Console.ReadKey();
